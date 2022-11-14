@@ -1,12 +1,18 @@
-# strava_access.py
+# make_dataset.py
 
 import json
 
 import requests
 from flask import Flask, request
 import re
+import subprocess
+from pathlib import Path
 
 from config import CLIENT_ID, CLIENT_SECRET
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -23,10 +29,12 @@ def index():
         },
     )
     # Save json response as a variable
-    write_file = "strava_tokens.json"
-    with open(write_file, "w") as fp:
+    token_file = Path(__file__).parent.absolute() / "tokens.json"
+    with open(token_file, "w") as fp:
         json.dump(tokens.json(), fp)
-    return f'Written to {write_file}. You may now close this window.'
+        logger.info(f"Wrote to {token_file}")
+
+    return f'Written to {token_file}. You may now close this window.'
 
 
 if __name__ == '__main__':
@@ -39,6 +47,9 @@ if __name__ == '__main__':
         f"&approval_prompt=force"
         f"&scope=profile:read_all,activity:read_all"
     )
-    print("Click here:", request_url)
+
+    subprocess.run(["open", "-a", "Safari", request_url])
+    print("Please visit this url:", request_url)
 
     app.run()
+

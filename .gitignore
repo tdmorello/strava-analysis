@@ -129,4 +129,7 @@ dmypy.json
 .pyre/
 
 config.py
-strava_tokens.json
+tokens.json
+*.csv
+.DS_Store
+.vscode
