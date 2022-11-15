@@ -128,8 +128,11 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-config.py
-tokens.json
-*.csv
+# custom
 .DS_Store
 .vscode
+
+config.py
+tokens.json
+
+*.csv
