@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
+TOKEN_FILE = Path(__file__).parent.absolute() / "tokens.json"
 
 @app.route("/")
 def index():
@@ -25,25 +26,25 @@ def index():
     if not code:
         logger.error("Access code not found.")
         return "Access code not found"
-    # Generate the data for POST
+    # Generate the POST data
     data = {
         "client_id": CLIENT_ID,
         "client_secret": CLIENT_SECRET,
         "code": code,
         "grant_type": "authorization_code",
     }
-    # POST request to strava for tokens
+    # get token from Strava
     tokens = requests.post(
         url="https://www.strava.com/oauth/token",
         data=data,
     )
-    # Save json response as a variable
-    token_file = Path(__file__).parent.absolute() / "tokens.json"
-    with open(token_file, "w") as fp:
-        json.dump(tokens.json(), fp)
-        logger.info(f"Wrote to {token_file}")
 
-    return f"Written to {token_file}. You may now close this window and shut down the server."
+    # Save json response as a variable
+    with open(TOKEN_FILE, "w") as fp:
+        json.dump(tokens.json(), fp)
+        logger.info(f"Written to {TOKEN_FILE}")
+
+    return f"Written to {TOKEN_FILE}. You may now close this window and shut down the server."
 
 
 if __name__ == "__main__":

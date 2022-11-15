@@ -16,7 +16,7 @@ DATA_DIR = ROOT_DIR / "data"
 TOKEN_FILE = Path(__file__).parent / "tokens.json"
 
 
-def get_activities(token, max_requests=5):
+def get_activities(token, max_requests=5) -> list:
     """Get activities from Strava."""
     activities_url = "https://www.strava.com/api/v3/athlete/activities"
 
@@ -34,24 +34,20 @@ def get_activities(token, max_requests=5):
     return activities
 
 
-def load_token():
+def load_token() -> dict:
     try:
         with open(TOKEN_FILE, "r") as fp:
             data = json.load(fp)
         return data
-    except FileNotFoundError as e:
+    except FileNotFoundError:
         logger.info(f"No token file exists at {TOKEN_FILE}")
         return
 
 
-def check_needs_refresh():
+def check_needs_refresh() -> bool:
     data = load_token()
     expires_at = data["expires_at"]
-    now = time.time()
-    if now > expires_at:
-        return True
-    else:
-        return False
+    return True if time.time() > expires_at else False
 
 
 def main():
