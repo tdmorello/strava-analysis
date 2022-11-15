@@ -23,3 +23,17 @@ def download_data(session: Session) -> None:
 def run_analysis(session: Session) -> None:
     """Plot and save figures"""
     subprocess.run(["python", SRC_DIR / "visualization/visualize.py", *session.posargs])
+
+@nox.session
+def setup(session: Session) -> None:
+    """Write config file for connceting to Strava API"""
+    config_file = SRC_DIR / "data" / "config.py"
+
+    if config_file.exists():
+        print("Config file already exists. Please remove it to re-run setup")
+    else:
+        client_id = input("Enter client ID\n> ")
+        client_secret = input("Enter client secret\n> ")
+        with open(config_file, "w") as fp:
+            fp.write(f'CLIENT_ID = "{client_id}"\nCLIENT_SECRET = "{client_secret}"')
+        print(f"Wrote to config to {config_file}")
