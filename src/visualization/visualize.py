@@ -2,12 +2,20 @@
 
 import pandas as pd
 from pathlib import Path
+import sys
 
+ROOT_DIR = Path(__file__).parents[2]
+DATA_DIR = ROOT_DIR / "data"
+FIGURE_DIR = ROOT_DIR / "reports/figures"
 
-def main():
+def main(argv):
+    save_jpg = "jpg" in argv
+    save_pdf = "pdf" in argv
+    save_png = "png" in argv
+    save_html = "html" in argv
+
     # get the latest downloaded dataset
-    csv_file = sorted((Path(__file__).parents[2] / "data/raw").glob("*.csv"))[-1]
-    print(csv_file)
+    csv_file = sorted((DATA_DIR / "raw").glob("*.csv"))[-1]
     df = pd.read_csv(csv_file)
 
     # preprocess the dataframe
@@ -65,10 +73,19 @@ def main():
         col=1,
     )
 
-    output_folder = Path(__file__).parents[2] / "reports/figures"
-    fig.write_html(output_folder / "test.html")
-    fig.write_image(output_folder / "test.png")
+    if not any([save_jpg, save_html, save_png, save_pdf]):
+        fig.write_image(FIGURE_DIR / "test.png")
+        return
+
+    if save_html:
+        fig.write_html(FIGURE_DIR / "test.html")
+    if save_png:
+        fig.write_image(FIGURE_DIR / "test.png")
+    if save_pdf:
+        fig.write_image(FIGURE_DIR / "test.pdf")
+    if save_jpg:
+        fig.write_image(FIGURE_DIR / "test.jpg")
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv)
