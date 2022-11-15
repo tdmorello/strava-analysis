@@ -1,3 +1,3 @@
 # strava-analysis
 
-Before starting, create `config.py` with a Strava client ID and secret.
+Create a `config.py` file or run `nox -s setup`
